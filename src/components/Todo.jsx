@@ -30,24 +30,27 @@ const TodoApp = () => {
   }, []);
 
   useEffect(() => {
+    
     if (user) {
-      const unsubscribe = () => {
-        const q = query(
-          collection(db, "todos"),
-          where("userId", "==", user.uid)
-        );
-        onSnapshot(q, (snapshot) => {
+      auth.currentUser.getIdToken( true).then().catch(function(error) {
+        console.log(error);
+      });
+      
+      const q = query(
+        collection(db, "todos"),
+        where("userId", "==", user.uid)
+      );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
           const todosData = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
           setTodos(todosData);
         });
-      };
 
       return () => unsubscribe();
     }
-  }, [user]);
+},[user]);
 
   const handleSignOut = async () => {
     try {
@@ -124,7 +127,6 @@ const TodoApp = () => {
           ))}
         </ul>
       </div>
-      {console.log(todos)}
     </div>
   );
 };

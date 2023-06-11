@@ -5,24 +5,8 @@ import { useNavigate, Link } from "react-router-dom";
 import './SignIn.css';
 
 const SignIn = () => {
-  const [authenticated, setAuth] = useState(
-    false || window.localStorage.getItem("authenticated") === "true"
-  );
-  const [token, setToken] = useState("");
   const [err, setErr] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    auth.onAuthStateChanged((userCred) => {
-      if (userCred) {
-        setAuth(true);
-        window.localStorage.setItem("authenticated", "true");
-        userCred.getIdToken().then((token) => {
-          setToken(token);
-        });
-      }
-    });
-  }, []);
 
   const loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -32,13 +16,10 @@ const SignIn = () => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         if (credential) {
-          setAuth(true);
-          window.localStorage.setItem("authenticated", "true");
           window.location.replace('/');
         }
       })
       .catch((error) => {
-        // Handle Errors here.
         window.alert("Some error occurred: " + error)
         navigate('/signin');
       });
